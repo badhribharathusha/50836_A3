@@ -40,7 +40,20 @@ def assignCluster(dataSet, k, centroids):
         clusterAssment: list
             assigned cluster id for each data point
     '''
-    #TODO
+    clusterAssment = []
+
+    for i in range(len(dataSet)):
+        point = dataSet[i]
+        min_dist = float('inf')
+        assigned_cluster = -1
+
+        for c in range(k):
+            dist = np.sqrt(np.sum(np.power(point - centroids[c], 2)))
+            if dist < min_dist:
+                min_dist = dist
+                assigned_cluster = c
+
+        clusterAssment.append(assigned_cluster)
 
     return clusterAssment
 
@@ -56,9 +69,17 @@ def getCentroid(dataSet, k, clusterAssment):
     Output:
         centroids: cluster centroids
     '''
-    
-    #TODO
+    centroids = []
 
+    for c in range(k):
+        cluster_points = [dataSet[i] for i in range(len(dataSet)) 
+                          if clusterAssment[i] == c]
+        if len(cluster_points) == 0:
+            centroids.append(np.zeros((dataSet.shape[1],)))
+        else:
+            centroids.append(np.mean(cluster_points, axis=0))
+    
+    centroids = np.array(centroids)
     return centroids
 
 

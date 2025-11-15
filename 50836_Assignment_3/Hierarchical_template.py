@@ -46,7 +46,23 @@ def merge_cluster(distance_matrix, cluster_candidate, T):
     '''
     merge_list = []
 
-    # TODO
+    i, j = np.unravel_index(np.argmin(distance_matrix), distance_matrix.shape)
+    if i > j:
+        i, j = j, i
+
+    keys = sorted(cluster_candidate.keys())
+    cluster_i_id = keys[i]
+    cluster_j_id = keys[j]
+
+    points_i = cluster_candidate[cluster_i_id]
+    points_j = cluster_candidate[cluster_j_id]
+
+    merge_list = [(cluster_i_id, points_i), (cluster_j_id, points_j)]
+
+    cluster_candidate[T] = points_i + points_j
+
+    del cluster_candidate[cluster_i_id]
+    del cluster_candidate[cluster_j_id]
 
     return cluster_candidate, merge_list
 
@@ -70,9 +86,16 @@ def update_distance(distance_matrix, cluster_candidate, merge_list):
     distance_matrix: 2-D array
         updated distance matrix       
     '''
-    
-    # TODO
-    
+    cluster_one_points = merge_list[0][1]  
+    cluster_two_points = merge_list[1][1]  
+
+    LIMIT = 1e7   
+
+    for p in cluster_one_points:
+        for q in cluster_two_points:
+            distance_matrix[p, q] = LIMIT
+            distance_matrix[q, p] = LIMIT
+
     return distance_matrix  
 
     
